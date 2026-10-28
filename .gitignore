@@ -1,0 +1,14 @@
+# Data never goes in git. It is 391 MB, it is CC BY-NC licensed, and it is
+# reproducible from the URL in the README.
+data/raw/*
+data/interim/*
+data/processed/*
+!data/**/.gitkeep
+
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+.DS_Store
+ds_sanctions/
