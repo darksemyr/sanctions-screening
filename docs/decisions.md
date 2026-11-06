@@ -11,8 +11,13 @@ Reason: those records link a person to a job or a company to its successor.
 They are not two names being compared, which is the problem we are studying.
 Keeping them would mean our metrics average over two different tasks.
 
-Effect: 755,540 rows becomes 442,054. Implemented as
-`config.IN_SCOPE_SCHEMAS`.
+Effect: 755,540 rows becomes 439,194. Implemented as
+`config.IN_SCOPE_SCHEMAS`, applied by `profile.in_scope_mask()`.
+
+Update 2026-11-06: the filter now checks **both** sides. Before, only
+`left_schema` was checked, which kept 2,860 mixed pairs such as
+Company / LegalEntity (442,054 rows). Both sides must be a name-bearing entity
+for the pair to be the comparison we study.
 
 ## 2026-10-28 — We do not compete on F1
 

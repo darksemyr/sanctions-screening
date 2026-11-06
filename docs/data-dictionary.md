@@ -39,7 +39,7 @@ The caption is one of the names in `*_name`, but comparing captions only
 throws away every other spelling. The median entity has 1 name, the 90th
 percentile has 12, and the maximum is 293.
 
-A pair can be `negative` with identical captions. 3,125 in-scope rows are like
+A pair can be `negative` with identical captions (ignoring case). 3,094 in-scope rows are like
 this. They are different people who are spelled the same.
 
 Fields are missing at very different rates, so a feature built on `idNumber`

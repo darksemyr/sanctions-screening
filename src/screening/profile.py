@@ -37,6 +37,16 @@ def script_of(text: str) -> str:
             "HEBREW": "Hebrew"}.get(common, common.title())
 
 
+def in_scope_mask(df: pd.DataFrame) -> pd.Series:
+    """True where BOTH sides are a name-bearing entity (see config.IN_SCOPE_SCHEMAS).
+
+    Checking only the left side would keep mixed pairs such as
+    Company / LegalEntity, which are not the two-name comparison we study.
+    """
+    return (df["left_schema"].isin(C.IN_SCOPE_SCHEMAS)
+            & df["right_schema"].isin(C.IN_SCOPE_SCHEMAS))
+
+
 def _presence(df: pd.DataFrame, prop: str) -> dict[str, object]:
     left = df[f"left_{prop}"].map(len) > 0
     right = df[f"right_{prop}"].map(len) > 0
@@ -82,11 +92,12 @@ def build_report(df: pd.DataFrame) -> str:
     add("| left / right | rows | in scope |")
     add("| --- | ---: | :---: |")
     for label, count in pair_type.value_counts().head(10).items():
-        left_schema = label.split(" / ")[0]
-        mark = "yes" if left_schema in C.IN_SCOPE_SCHEMAS else "no"
+        left_schema, right_schema = label.split(" / ")
+        both = left_schema in C.IN_SCOPE_SCHEMAS and right_schema in C.IN_SCOPE_SCHEMAS
+        mark = "yes" if both else "no"
         add(f"| {label} | {count:,} | {mark} |")
     add("")
-    in_scope = df["left_schema"].isin(C.IN_SCOPE_SCHEMAS)
+    in_scope = in_scope_mask(df)
     add(f"In scope: **{int(in_scope.sum()):,}** rows "
         f"({100 * in_scope.mean():.1f}%). Dropped: {int((~in_scope).sum()):,}.")
     add("")
@@ -163,6 +174,6 @@ def run() -> str:
     out = C.REPORTS / "01-data-profile.md"
     out.write_text(report, encoding="utf-8")
 
-    scoped = df[df["left_schema"].isin(C.IN_SCOPE_SCHEMAS)].copy()
+    scoped = df[in_scope_mask(df)].copy()
     scoped.to_parquet(C.PAIRS_SCOPED, index=False)
     return str(out)
