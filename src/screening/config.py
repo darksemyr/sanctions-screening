@@ -27,7 +27,8 @@ PAIRS_SCOPED = DATA_INTERIM / "pairs_scoped.parquet"
 # The file contains six kinds of record pair. Occupancy, Succession and
 # Position are links between a person and a job, not names to be matched.
 # We keep only the three schemas where two names are actually compared.
-# Roughly 273k of 755k rows are dropped by this.
+# A pair is kept only if BOTH sides are one of these (profile.in_scope_mask).
+# 316,346 of 755,540 rows are dropped by this; 439,194 remain.
 IN_SCOPE_SCHEMAS = ("Person", "Company", "Organization")
 
 # Entity properties we pull out of the nested records. Anything not listed

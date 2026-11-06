@@ -86,13 +86,14 @@ From the first profiling run, all reproducible with `make all`:
 - 755,540 pairs, 76.9% positive. The pairs already survived a blocking step,
   so the familiar rare-event imbalance is **not** in this file. It is in the
   blocking that happens upstream.
-- 442,054 rows are in scope (Person, Company, Organization). The other 313,486
-  are Occupancy, Succession, Position and similar, which link a person to a
-  job rather than comparing two names.
+- 439,194 rows are in scope: both sides are a Person, Company or
+  Organization. The other 316,346 are Occupancy, Succession, Position and
+  similar, which link a person to a job rather than comparing two names, plus
+  mixed pairs such as Company / LegalEntity.
 - Both sides carry a name in 98.8% of in-scope rows. A birth date on both
-  sides: 48.9%. An ID number on both sides: only 9.1%.
-- 6.2% of pairs are written in two different scripts.
-- **3,125 negative pairs have byte-identical names.** Different people,
+  sides: 49.2%. An ID number on both sides: only 9.1%.
+- 6.4% of pairs are written in two different scripts.
+- **3,094 negative pairs have identical names** (ignoring upper/lower case). Different people,
   same spelling. No string metric can ever separate those, which sets a hard
   ceiling on any name-only approach and is the single best argument for using
   birth date and country as features.
