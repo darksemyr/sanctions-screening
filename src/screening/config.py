@@ -22,6 +22,26 @@ RAW_PAIRS = DATA_RAW / "pairs-20251209.json.gz"
 
 PAIRS_FLAT = DATA_INTERIM / "pairs_flat.parquet"
 PAIRS_SCOPED = DATA_INTERIM / "pairs_scoped.parquet"
+PAIRS_CLEAN = DATA_INTERIM / "pairs_clean.parquet"  # written by the cleaning step (Vova)
+
+# Input of all feature scripts. Switch to PAIRS_CLEAN in the same pull request
+# that adds the cleaning, so code and data on main always match.
+PAIRS_INPUT = PAIRS_SCOPED
+
+# --- Feature engineering (step 3), added 2026-11-11 ----------------------
+# Every name and alias in the whole OpenSanctions database, one per line.
+# Used to count how common a name is (name-frequency feature).
+# Downloaded 2026-11-11 (latest default collection). The pairs are from
+# 2025-12-09; older names exports need a data delivery token.
+NAMES_TXT = DATA_RAW / "names-20261111.txt"
+
+# Each person writes their own feature file, keyed by pair_id.
+# Contract: pair_id + own columns only, same row count as PAIRS_SCOPED,
+# column prefix n_ (names) or r_ (record), no NaN, categories from the
+# lists defined in the owner's section below.
+FEATURES_NAME = DATA_PROCESSED / "features_name.parquet"      # Person A
+FEATURES_RECORD = DATA_PROCESSED / "features_record.parquet"  # Person B
+FEATURES = DATA_PROCESSED / "features.parquet"                # merged by 03_features.py
 
 # --- Scope decision, made 2026-10-28 -----------------------------------
 # The file contains six kinds of record pair. Occupancy, Succession and
@@ -49,3 +69,10 @@ LIST_PROPS = (
 )
 
 RANDOM_SEED = 42
+
+# --- Name features (Person A) -------------------------------------------
+# Category lists and parameters for name features go here, and only here.
+
+
+# --- Record features (Person B) -----------------------------------------
+# Category lists and parameters for record features go here, and only here.
