@@ -18,10 +18,12 @@ The deliverable is a cost curve and an error taxonomy, not an accuracy score.
 
 ## Get it running
 
+Tested with Python 3.14. The modelling libraries (scikit-learn, LightGBM, XGBoost, SHAP) are in `requirements.txt`.
+
 ```bash
 git clone <this repo> && cd sanctions-screening
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt   # on Windows activate with .venv\Scripts\activate
 
 # download the data (391 MB, not in git)
 curl -L -o data/raw/pairs-20251209.json.gz \
@@ -29,7 +31,8 @@ curl -L -o data/raw/pairs-20251209.json.gz \
 
 make data      # ~95s: nested JSON -> flat parquet
 make profile   # ~20s: writes reports/01-data-profile.md
-make test      # 4 tests
+make features-name   # ~10 min: name features (needs data/raw/targets.simple-20261111.csv, see below)
+make test      # all tests
 ```
 
 If `make data` finishes and `make test` passes, your environment matches
@@ -42,6 +45,8 @@ src/screening/      importable code. Anything used twice lives here.
   config.py         every path and every scope decision, in one place
   parse.py          JSON Lines -> flat table
   profile.py        generates the data profile report
+  lists.py          safe access to the list-valued pair columns
+  name_features.py  the 15 name features (n_), see docs/decisions.md
 scripts/            thin runners, numbered in execution order
 notebooks/          exploration only. Never the source of a result.
 reports/            generated. Never hand-edited.
@@ -76,6 +81,13 @@ entity records are the same real-world entity.
   republish a derivative dataset.
 - Benchmark paper: https://arxiv.org/abs/2603.11051
 
+Second file, for the name-frequency features: the OpenSanctions entity export
+`targets.simple.csv` (default collection, one row per entity). We use the
+export of 2026-11-11. Save it as `data/raw/targets.simple-20261111.csv`.
+
+- Source: https://data.opensanctions.org/datasets/latest/default/targets.simple.csv
+- Why this file and not `names.txt`: docs/decisions.md, 2026-11-13.
+
 See `docs/data-dictionary.md` for the fields and `reports/01-data-profile.md`
 for what is actually in them.
 
@@ -86,13 +98,14 @@ From the first profiling run, all reproducible with `make all`:
 - 755,540 pairs, 76.9% positive. The pairs already survived a blocking step,
   so the familiar rare-event imbalance is **not** in this file. It is in the
   blocking that happens upstream.
-- 442,054 rows are in scope (Person, Company, Organization). The other 313,486
-  are Occupancy, Succession, Position and similar, which link a person to a
-  job rather than comparing two names.
+- 439,194 rows are in scope: both sides are a Person, Company or
+  Organization. The other 316,346 are Occupancy, Succession, Position and
+  similar, which link a person to a job rather than comparing two names, plus
+  mixed pairs such as Company / LegalEntity.
 - Both sides carry a name in 98.8% of in-scope rows. A birth date on both
-  sides: 48.9%. An ID number on both sides: only 9.1%.
-- 6.2% of pairs are written in two different scripts.
-- **3,125 negative pairs have byte-identical names.** Different people,
+  sides: 49.2%. An ID number on both sides: only 9.1%.
+- 6.4% of pairs are written in two different scripts.
+- **3,094 negative pairs have identical names** (ignoring upper/lower case). Different people,
   same spelling. No string metric can ever separate those, which sets a hard
   ceiling on any name-only approach and is the single best argument for using
   birth date and country as features.
@@ -103,7 +116,9 @@ From the first profiling run, all reproducible with `make all`:
 | --- | --- | --- | --- |
 | 1. Parse | `01_parse.py` | `data/interim/pairs_flat.parquet` | done |
 | 2. Profile | `02_profile.py` | `reports/01-data-profile.md` | done |
-| 3. Features | `03_features.py` | `data/processed/features.parquet` | next |
+| 3a. Name features | `03a_name_features.py` | `data/processed/features_name.parquet` | done (uncleaned input) |
+| 3b. Record features | `03b_record_features.py` | `data/processed/features_record.parquet` | in progress |
+| 3. Merge features | `03_features.py` | `data/processed/features.parquet` | next |
 | 4. Model | `04_train.py` | `reports/02-model.md` | |
 | 5. Threshold | `05_threshold.py` | `reports/03-cost-curve.md` | |
 | 6. Errors | `06_errors.py` | `reports/04-error-taxonomy.md` | |
