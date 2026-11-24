@@ -31,7 +31,7 @@ this file. Our false-positive counts are not production alert rates.
 | LegalEntity / Company | 7,738 | no |
 | Vessel / Vessel | 7,550 | no |
 
-In scope: **442,054** rows (58.5%). Dropped: 313,486.
+In scope: **439,194** rows (58.1%). Dropped: 316,346.
 
 ## Field presence, in-scope rows only
 
@@ -40,17 +40,17 @@ Which features are even possible. A feature needs the field on
 
 | field | left has | right has | both have | both % |
 | --- | ---: | ---: | ---: | ---: |
-| name | 442,016 | 436,755 | 436,718 | 98.8% |
-| topics | 405,875 | 415,016 | 390,569 | 88.4% |
-| country | 336,562 | 331,770 | 269,529 | 61.0% |
-| birthDate | 222,304 | 251,056 | 216,281 | 48.9% |
-| firstName | 209,554 | 233,161 | 196,290 | 44.4% |
-| address | 217,172 | 237,265 | 188,591 | 42.7% |
-| alias | 218,474 | 262,984 | 181,570 | 41.1% |
-| lastName | 197,963 | 217,970 | 179,300 | 40.6% |
-| nationality | 123,990 | 110,683 | 69,814 | 15.8% |
-| middleName | 59,622 | 82,978 | 43,808 | 9.9% |
-| idNumber | 66,549 | 70,814 | 40,138 | 9.1% |
+| name | 439,156 | 433,899 | 433,862 | 98.8% |
+| topics | 403,489 | 412,447 | 388,375 | 88.4% |
+| country | 334,451 | 329,724 | 267,838 | 61.0% |
+| birthDate | 222,212 | 251,056 | 216,281 | 49.2% |
+| firstName | 209,269 | 233,161 | 196,290 | 44.7% |
+| address | 215,483 | 235,427 | 187,602 | 42.7% |
+| alias | 217,485 | 261,976 | 181,024 | 41.2% |
+| lastName | 197,676 | 217,970 | 179,300 | 40.8% |
+| nationality | 123,955 | 110,683 | 69,814 | 15.9% |
+| middleName | 59,477 | 82,978 | 43,808 | 10.0% |
+| idNumber | 66,306 | 70,718 | 40,079 | 9.1% |
 
 ## Writing systems
 
@@ -58,14 +58,14 @@ Sampled 40,000 in-scope rows.
 
 | script | share of left names |
 | --- | ---: |
-| Latin | 90.0% |
-| Cyrillic | 9.3% |
+| Latin | 89.7% |
+| Cyrillic | 9.5% |
 | CJK | 0.6% |
 | Arabic | 0.1% |
 | Thai | 0.0% |
 | Georgian | 0.0% |
 
-Pairs where the two sides use **different** writing systems: **6.2%**. Those are the ones plain edit
+Pairs where the two sides use **different** writing systems: **6.4%**. Those are the ones plain edit
 distance cannot help with.
 
 ## Name lengths and aliases
@@ -83,13 +83,13 @@ to separate, and no string metric does it alone.
 
 | left | right |
 | --- | --- |
-| Ilya Eduardovich Torosov | Ilia Volfson |
-| Justin Gacheri MUSANGA | Justin Blaise TAGOUH |
-| PRINCE HOROLOGY VOCATIONAL TRAINING CENTER | Prince Holding Group |
-| Shams Alrabeea Chemicals Trading L.L.C | BRIGHT SPOT GOODS WHOLESALERS L.L.C |
-| Marina YUREUNA Rakhmanava | Inna Yuryevna Svyatenko |
-| Abdul Kareem | Abdul Kareem |
-| Санкт-Петербурзький державний лісотехнічний університет імені Кірова | Санкт-Петербурзький державний університет цивільної авіації |
-| Klas Kimyasal Urunler Ticaret Limited Sirketi | Golden Stars Kiymetli Madenler Tekstil Sanayi Ticaret Limited Sirketi |
-| RAFIDAIN STATE ORGANIZATION FOR IRRIGATION PROJECTS | STATE ENTERPRISE FOR IRRIGATION PROJECTS |
-| Mikhail Alekseevich IVANCHIKHIN | Igor Alekseevich GROZA |
+| Annette Haratunian | Annette Ferguson |
+| LLC Avaland SI | LLC Testkomplekt |
+| NAI EUROPE ENERGY GMBH & CO. KG | PYRAMAXIA REAL ESTATE GMBH & CO. KG |
+| BANK DABRABYT JOINT STOCK COMPANY | Tanchon Commercial Bank |
+| DG TECH SERVICES 2 LTD | ДіЕльДі Тек Ван Лтд |
+| Fahad Darwish | Fahed Jasim Al-Furayj |
+| Kathleen Steward | Kathleen Casey |
+| URBANIZACION, INMOBILIARIA Y CONSTRUCCION DE OBRAS, S.A. DE C.V. | INMOBILIARIA DEL RIO HUMAYA, S.A. DE C.V. |
+| Khin Maung Soe | Maung Maung Soe |
+| Haj Ahmad Mirzaei | Abdelbasit Alhaj Alhassan Haj HAMAD |
