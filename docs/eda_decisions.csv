@@ -1,0 +1,10 @@
+question,topic,decision,evidence
+3.1,Scope,"Keep Person / Company / Organization, filtered on BOTH sides","755,540 -> 439,194"
+3.2,Cleaning,"Remove self-pairs, then duplicate id-pairs (order matters)","-38,217 self, -379 dup"
+3.3,Balance,"Report the cleaned balance, not the raw one",59.1% positive
+2.4,Split,"Split train/val/test BY ENTITY, never by row",most rows touch a reused entity
+4.3,Birth date,"Four-level agreement, not boolean",17% are year-only
+5.3,Record type,Never one metric across people and companies,company AUC ~0.54
+5.4,Script,Add a cross_script flag; transliteration is step 4,cross-script AUC < 0.5
+6.3,Model,"One model, two reports",split on birth-date availability
+7.2,Leakage,"Exclude datasets, topics, name counts; measure presence flags",source overlap ~92%
