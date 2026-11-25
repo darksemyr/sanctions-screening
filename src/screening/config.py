@@ -40,9 +40,9 @@ PAIRS_INPUT = PAIRS_CLEAN
 # --- Feature engineering (step 3), added 2026-11-11 ----------------------
 # Every name and alias in the whole OpenSanctions database, one per line.
 # Used to count how common a name is (name-frequency feature).
-# Downloaded 2026-11-11 (latest default collection). The pairs are from
-# 2025-12-09; older names exports need a data delivery token.
-NAMES_TXT = DATA_RAW / "names-20261111.txt"
+# Downloaded 2026-11-11 (latest default collection), saved as names.txt.
+# The pairs are from 2025-12-09; older names exports need a data delivery token.
+NAMES_TXT = DATA_RAW / "names.txt"
 
 # Each person writes their own feature file, keyed by pair_id.
 # Contract: pair_id + own columns only, same row count as PAIRS_INPUT,
