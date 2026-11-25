@@ -12,3 +12,7 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 ds_sanctions/
+
+# Local copy of a notebook WITH outputs, for reading. Never committed:
+# outputs hold local paths and entity names.
+*.executed.ipynb
