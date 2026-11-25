@@ -95,7 +95,7 @@ MAX_NAMES = 30
 
 # Frequency bands: (lowest count, highest count) -> band 0, 1, 2, ...
 # 0 (not in targets.simple) is merged with 1-2 on purpose: both are almost
-# always positive pairs (merge effect, notebook 05). -1 = nothing shared.
+# always positive pairs (merge effect, notebook 06). -1 = nothing shared.
 WORD_BANDS = [(0, 2), (3, 10), (11, 100), (101, 1000), (1001, 10**9)]
 NAME_BANDS = [(0, 2), (3, 5), (6, 20), (21, 10**9)]
 FREQ_GROUPS = {"person": ("Person",), "org": ("Company", "Organization", "LegalEntity")}
