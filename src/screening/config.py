@@ -22,11 +22,20 @@ RAW_PAIRS = DATA_RAW / "pairs-20251209.json.gz"
 
 PAIRS_FLAT = DATA_INTERIM / "pairs_flat.parquet"
 PAIRS_SCOPED = DATA_INTERIM / "pairs_scoped.parquet"
-PAIRS_CLEAN = DATA_INTERIM / "pairs_clean.parquet"  # written by the cleaning step (Vova)
+# Written by notebooks/02-vs-eda-cleaning-split.ipynb (Vova).
+# In scope on both sides, self-pairs removed, duplicate pairs removed after
+# normalising the order of the two sides. One row per pair_id.
+PAIRS_CLEAN = DATA_PROCESSED / "pairs_clean.parquet"
 
-# Input of all feature scripts. Switch to PAIRS_CLEAN in the same pull request
-# that adds the cleaning, so code and data on main always match.
-PAIRS_INPUT = PAIRS_SCOPED
+# PAIRS_CLEAN plus two columns: split (train / val / test) and entity_group.
+# Groups are built from positive pairs only, so a group is one entity as the
+# analysts decided it. A whole group goes to one split; negative pairs whose
+# two sides fall in different splits are dropped, so this file has fewer rows
+# than PAIRS_CLEAN. Join features to it on pair_id.
+PAIRS_SPLIT = DATA_PROCESSED / "pairs_split.parquet"
+
+# Input of all feature scripts.
+PAIRS_INPUT = PAIRS_CLEAN
 
 # --- Feature engineering (step 3), added 2026-11-11 ----------------------
 # Every name and alias in the whole OpenSanctions database, one per line.
