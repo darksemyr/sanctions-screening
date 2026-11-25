@@ -94,7 +94,7 @@ information. To re-run after the cleaning.
 
 ## 2026-11-16 — Label leaks and data traps
 
-Checked in `notebooks/05-rs-label-leakage-checks.ipynb` on the uncleaned pairs
+Checked in `notebooks/06-rs-label-leakage-checks.ipynb` on the uncleaned pairs
 (439,194). Each property was tested on its own as a predictor of the label
 (AUC; 0.5 = chance). Anything that predicts the label without reading the
 names describes the labelling process, not the entities, and must never become
