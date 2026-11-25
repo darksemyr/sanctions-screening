@@ -116,5 +116,32 @@ N_CATEGORIES = {
 N_FEATURES = N_NUMERIC + list(N_CATEGORIES)
 
 
-# --- Record features (Person B) -----------------------------------------
+# --- Record features (Person B, taken over by Robin) ---------------------
 # Category lists and parameters for record features go here, and only here.
+# Code: src/screening/record_features.py, runner: scripts/03b_record_features.py.
+# Reasoning: docs/decisions.md (2026-11-25) and notebook 05 (sections 5b-5f).
+# Raw values (a birth date, a country) are never features: only the comparison
+# of the two sides. Topics are left out (assigned per list = source-list leak).
+
+# r_dob_status is version 4 of notebook 05 (section 5f): version 1 plus
+# "swapped" (day and month swapped) and "day_month_typo" (one digit wrong or
+# two digits swapped in the day or month, same year). Year "typos" stay
+# "different": they are mostly different people.
+R_NUMERIC = ["r_address_sim"]
+R_CATEGORIES = {
+    "r_dob_status": ["exact", "partial_match", "swapped", "day_month_typo", "same_year", "close",
+                     "different", "missing"],
+    "r_country_status": ["same", "different", "missing"],   # country + nationality together
+    "r_id_status": ["same", "different", "missing"],
+}
+R_FEATURES = list(R_CATEGORIES) + R_NUMERIC
+
+# How a missing field reaches the model (notebook 05, sections 5, 5e).
+# Which fields are missing predicts the label (presence pattern AUC 0.86):
+# it describes how the lists were built, not the entities. So by default the
+# model cannot see it:
+#   "different": "missing" -> "different", missing r_address_sim -> median of
+#                Vova's train + val pairs (main result: 2.71% at 99% recall)
+#   "keep":      "missing" stays a category, r_address_sim stays NaN
+#                (optimistic: 2.47%)
+R_MISSING_POLICY = "different"
