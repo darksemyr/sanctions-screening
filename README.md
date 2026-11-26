@@ -32,6 +32,7 @@ curl -L -o data/raw/pairs-20251209.json.gz \
 make data      # ~95s: nested JSON -> flat parquet
 make profile   # ~20s: writes reports/01-data-profile.md
 make features-name   # ~10 min: name features (needs data/raw/targets.simple-20261111.csv, see below)
+make features-record # ~3 min: record features (needs pairs_clean + pairs_split from notebook 02)
 make test      # all tests
 ```
 
@@ -47,6 +48,7 @@ src/screening/      importable code. Anything used twice lives here.
   profile.py        generates the data profile report
   lists.py          safe access to the list-valued pair columns
   name_features.py  the 15 name features (n_), see docs/decisions.md
+  record_features.py  the 4 record features (r_), see docs/decisions.md
 scripts/            thin runners, numbered in execution order
 notebooks/          exploration only. Never the source of a result.
 reports/            generated. Never hand-edited.
@@ -116,9 +118,9 @@ From the first profiling run, all reproducible with `make all`:
 | --- | --- | --- | --- |
 | 1. Parse | `01_parse.py` | `data/interim/pairs_flat.parquet` | done |
 | 2. Profile | `02_profile.py` | `reports/01-data-profile.md` | done |
-| 3a. Name features | `03a_name_features.py` | `data/processed/features_name.parquet` | done (uncleaned input) |
-| 3b. Record features | `03b_record_features.py` | `data/processed/features_record.parquet` | in progress |
-| 3. Merge features | `03_features.py` | `data/processed/features.parquet` | next |
+| 3a. Name features | `03a_name_features.py` | `data/processed/features_name.parquet` | done |
+| 3b. Record features | `03b_record_features.py` | `data/processed/features_record.parquet` | done |
+| 3. Merge features | notebook 07 merges on `pair_id` | | done in 07 |
 | 4. Model | `04_train.py` | `reports/02-model.md` | |
 | 5. Threshold | `05_threshold.py` | `reports/03-cost-curve.md` | |
 | 6. Errors | `06_errors.py` | `reports/04-error-taxonomy.md` | |

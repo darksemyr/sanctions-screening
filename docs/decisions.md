@@ -165,3 +165,78 @@ side has no name.
 
 **Still to redo on the cleaned data** with LightGBM / XGBoost and a holdout
 fixed in advance; all numbers above are from the uncleaned in-scope pairs.
+
+## 2026-11-25 — Record features: the final 4, and how missing fields are handled
+
+**Decision.** The record side uses 4 features. Code:
+`src/screening/record_features.py`, run with `make features-record`.
+Evidence: notebook 05 (cleaned pairs, Vova's train + val only, 5 splits by
+person group, LightGBM).
+
+| Feature | What it measures |
+| --- | --- |
+| r_dob_status | birth dates compared: exact / partial_match / swapped / day_month_typo / same_year / close / different |
+| r_country_status | country and nationality: same / different |
+| r_id_status | ID numbers (idNumber field, not the record ID): same / different |
+| r_address_sim | best similarity of the addresses, 0..1 |
+
+- **r_dob_status is version 4** (notebook 05, section 5f): version 1 plus
+  day/month swapped and a one-digit typo in day or month. False alarms do not
+  change (2.73% → 2.71% at 99% recall), but far fewer of these true matches
+  are missed (4 instead of 12 over 5 splits). Year "typos" stay "different":
+  they are mostly different people (2–4% positive).
+- **Dropped:** `r_dob_year_gap` (adds nothing, section 5d) and topics
+  (assigned per list = source-list leak).
+- **Kept although small:** country (+0.09 pp when left out, without missing
+  information; better in 5 of 5 splits).
+
+**Missing fields.** Which fields are present predicts the label on its own
+(AUC 0.86): it describes how the lists were built, not the entities. By
+default the model cannot see it (`config.R_MISSING_POLICY = "different"`):
+"missing" becomes "different", a missing address similarity becomes the
+median of the train + val pairs.
+
+| 99% recall, name + record | false alarms |
+| --- | --- |
+| names only | 3.86% |
+| "missing" kept (optimistic) | 2.47% |
+| **"different" stand-in (main result)** | **2.71%** |
+| random stand-in (pessimistic) | 3.30% |
+
+We report the range: comparing values cuts false alarms by 0.6–1.1 pp; the
+rest up to 1.4 pp comes from the missingness pattern. Reweighting to remove
+the pattern was considered and left out as too complex for what it adds.
+
+## 2026-11-25 — Evaluation: Vova's test set stays closed, development splits by person group
+
+**Decision.** Vova's split (`pairs_split.parquet`, notebook 02) is fixed:
+train / val / test = 60 / 20 / 20 by entity group (groups from positive pairs
+only, so a positive pair never crosses splits; negative pairs across splits
+are dropped). All development work (feature choice, model comparison, error
+analysis: notebooks 05, 07, 09) uses **train + val only**, with 5 repeated
+inner splits **by person group** (30% of the groups to validation, salt per
+repetition). The test pairs are used once, at the end, with the threshold
+chosen on val.
+
+**Why by person group and not by entity ID.** One real entity often has
+several IDs (95% of IDs belong to an entity with at least two). Split by ID,
+the same person sits on both sides, and the model looks better than it is:
++0.4 pp false alarms at 99% recall once the split respects the groups
+(notebook 07, section 10, uncleaned pairs). The group split also drops fewer
+pairs, because positive pairs always stay inside one group.
+
+**Supersedes** the entity split of 2026-11-16 above.
+
+## 2026-11-25 — Cleaned data: where the model stands before the final run
+
+Notebook 05, cleaned pairs, train + val, 5 group splits, LightGBM default,
+false alarms at 99% / 99.5% recall:
+
+| Features | 99% | 99.5% |
+| --- | --- | --- |
+| names only (15) | 3.86% | 6.34% |
+| names + record (4), missing as "different" | 2.71% | 3.86% |
+
+Reproduced exactly from the feature files written by `make features`
+(check run, 2026-11-25). Notebook 07 compares the models on these features;
+the final number comes from Vova's test pairs.

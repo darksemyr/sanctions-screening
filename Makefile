@@ -1,4 +1,4 @@
-.PHONY: setup data profile features-name test all clean
+.PHONY: setup data profile features-name features-record features test all clean
 
 setup:
 	python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
@@ -11,6 +11,11 @@ profile:
 
 features-name:
 	python scripts/03a_name_features.py
+
+features-record:
+	python scripts/03b_record_features.py
+
+features: features-name features-record
 
 test:
 	pytest -q

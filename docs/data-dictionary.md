@@ -45,3 +45,20 @@ this. They are different people who are spelled the same.
 Fields are missing at very different rates, so a feature built on `idNumber`
 exists for 9.1% of pairs while one built on `name` exists for 98.8%. Decide
 how a model handles a missing feature before you build it, not after.
+
+## Feature files (`data/processed/`)
+
+Both are keyed by `pair_id`, one row per pair of `PAIRS_INPUT`, and are merged
+in notebook 07. Category lists and settings: `src/screening/config.py`.
+Reasons for every choice: `docs/decisions.md`.
+
+| file | written by | columns |
+| --- | --- | --- |
+| `features_name.parquet` | `make features-name` | 15 `n_` features: string similarities, exact name, coverage, phonetic match, initials, numbers, script, first/last name fields, company core and legal form, name frequency bands |
+| `features_record.parquet` | `make features-record` | `r_dob_status`, `r_country_status`, `r_id_status`, `r_address_sim` |
+
+The record features compare the two sides only; no raw birth date, country or
+ID is ever a feature. With the default `R_MISSING_POLICY = "different"` the
+file contains no "missing": a missing field reads as "different", a missing
+address similarity as the median of the train + val pairs (0.745 on the
+cleaned data). `datasets` and `topics` are never used (source-list leak).
